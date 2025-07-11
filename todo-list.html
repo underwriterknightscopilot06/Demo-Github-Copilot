@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .todo-container {
+            background: white;
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 30px 30px 20px 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .add-todo {
+            padding: 20px 30px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .add-todo input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .add-todo input:focus {
+            border-color: #8b5cf6;
+        }
+
+        .add-todo input::placeholder {
+            color: #999;
+        }
+
+        .add-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #7c3aed;
+        }
+
+        .todo-list {
+            padding: 20px 30px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .footer {
+            padding: 20px 30px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+        }
+
+        .task-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .clear-all-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .clear-all-btn:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <div class="header">
+            <h1>Todo App</h1>
+        </div>
+        
+        <div class="add-todo">
+            <input type="text" id="todoInput" placeholder="Add your new todo">
+            <button class="add-btn" onclick="addTodo()">+</button>
+        </div>
+        
+        <div class="todo-list" id="todoList">
+            <div class="todo-item">
+                <span class="todo-text">Buy a new gaming laptop</span>
+            </div>
+            <div class="todo-item">
+                <span class="todo-text completed">Complete a previous task</span>
+                <button class="delete-btn" onclick="deleteTodo(this)">🗑</button>
+            </div>
+            <div class="todo-item">
+                <span class="todo-text">Create video for YouTube</span>
+            </div>
+            <div class="todo-item">
+                <span class="todo-text">Create a new portfolio site</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <span class="task-count">You have <span id="taskCount">4</span> pending tasks</span>
+            <button class="clear-all-btn" onclick="clearAllTasks()">Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const todoList = document.getElementById('todoList');
+            
+            if (input.value.trim() !== '') {
+                const todoItem = document.createElement('div');
+                todoItem.className = 'todo-item';
+                todoItem.innerHTML = `
+                    <span class="todo-text" onclick="toggleComplete(this)">${input.value}</span>
+                    <button class="delete-btn" onclick="deleteTodo(this)">🗑</button>
+                `;
+                todoList.appendChild(todoItem);
+                input.value = '';
+                updateTaskCount();
+            }
+        }
+
+        function deleteTodo(button) {
+            button.parentElement.remove();
+            updateTaskCount();
+        }
+
+        function toggleComplete(span) {
+            span.classList.toggle('completed');
+        }
+
+        function clearAllTasks() {
+            const todoList = document.getElementById('todoList');
+            todoList.innerHTML = '';
+            updateTaskCount();
+        }
+
+        function updateTaskCount() {
+            const todoItems = document.querySelectorAll('.todo-item');
+            const completedItems = document.querySelectorAll('.todo-text.completed');
+            const pendingCount = todoItems.length - completedItems.length;
+            document.getElementById('taskCount').textContent = pendingCount;
+        }
+
+        // Allow Enter key to add todo
+        document.getElementById('todoInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                addTodo();
+            }
+        });
+
+        // Initialize task count
+        updateTaskCount();
+    </script>
+</body>
+</html>
