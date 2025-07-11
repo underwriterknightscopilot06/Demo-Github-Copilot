@@ -4,66 +4,321 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factorial Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 50px auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            margin: 10px;
-            width: 200px;
+        
+        .calculator-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
-        button:hover {
-            background-color: #0056b3;
+        
+        .back-link:hover {
+            color: #764ba2;
         }
+        
         h1 {
             color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        input[type="number"] {
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        input[type="number"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .calc-button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary-custom {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+        }
+        
+        .calc-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .calc-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .result-container {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #e0e8ff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .result-text {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .result-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            word-break: break-all;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .calculation-steps {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #666;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .calc-button {
+                width: 100%;
+                max-width: 250px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Factorial Calculator</h1>
-        <p>Enter a non-negative integer to calculate its factorial:</p>
+    <div class="calculator-container">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
         
-        <input type="number" id="numberInput" placeholder="Enter a number" min="0">
-        <br>
-        <button onclick="calculateFactorial()">Calculate Factorial</button>
-        <button onclick="calculateFactorialRecursive()">Calculate (Recursive)</button>
+        <h1><i class="fas fa-calculator"></i> Factorial Calculator</h1>
+        <p class="subtitle">Enter a non-negative integer to calculate its factorial</p>
+        
+        <div class="input-group">
+            <input type="number" id="numberInput" placeholder="Enter a number" min="0" max="170">
+        </div>
+        
+        <div class="button-group">
+            <button class="calc-button btn-primary-custom" onclick="calculateFactorial()">
+                <i class="fas fa-sync-alt"></i> Calculate Factorial
+            </button>
+            <button class="calc-button btn-secondary-custom" onclick="calculateFactorialRecursive()">
+                <i class="fas fa-layer-group"></i> Calculate (Recursive)
+            </button>
+        </div>
+        
+        <div id="resultContainer" class="result-container">
+            <p class="result-text">Enter a number and click calculate to see the result</p>
+        </div>
     </div>
 
     <!-- Link to external factorial.js file -->
     <script src="factorial.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function showResult(message, isError = false, showSteps = false, number = null) {
+            const resultContainer = document.getElementById('resultContainer');
+            
+            if (isError) {
+                resultContainer.innerHTML = `<p class="result-text error-message"><i class="fas fa-exclamation-triangle"></i> ${message}</p>`;
+            } else {
+                let stepsHtml = '';
+                if (showSteps && number !== null && number <= 10) {
+                    let steps = [];
+                    for (let i = 1; i <= number; i++) {
+                        steps.push(i);
+                    }
+                    stepsHtml = `<div class="calculation-steps">
+                        <strong>Calculation:</strong> ${steps.join(' × ')} = ${message.split(': ')[1]}
+                    </div>`;
+                }
+                
+                resultContainer.innerHTML = `
+                    <div>
+                        <p class="result-text"><i class="fas fa-check-circle text-success"></i> ${message}</p>
+                        ${stepsHtml}
+                    </div>
+                `;
+            }
+            
+            resultContainer.classList.add('show');
+        }
+
+        function calculateFactorial() {
+            const input = document.getElementById('numberInput');
+            const number = parseInt(input.value);
+            
+            if (isNaN(number) || input.value === '') {
+                showResult('Please enter a valid number!', true);
+                return;
+            }
+            
+            try {
+                const result = factorial(number);
+                showResult(`The factorial of ${number} is: <span class="result-number">${result.toLocaleString()}</span>`, false, true, number);
+            } catch (error) {
+                showResult(error.message, true);
+            }
+        }
+
+        function calculateFactorialRecursive() {
+            const input = document.getElementById('numberInput');
+            const number = parseInt(input.value);
+            
+            if (isNaN(number) || input.value === '') {
+                showResult('Please enter a valid number!', true);
+                return;
+            }
+            
+            try {
+                const result = factorialRecursive(number);
+                showResult(`The factorial of ${number} (recursive) is: <span class="result-number">${result.toLocaleString()}</span>`, false, true, number);
+            } catch (error) {
+                showResult(error.message, true);
+            }
+        }
+
         // Allow Enter key to trigger calculation
         document.getElementById('numberInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 calculateFactorial();
             }
+        });
+        
+        // Clear result when input changes
+        document.getElementById('numberInput').addEventListener('input', function() {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.remove('show');
+            setTimeout(() => {
+                resultContainer.innerHTML = '<p class="result-text">Enter a number and click calculate to see the result</p>';
+            }, 300);
         });
     </script>
 </body>

@@ -48,15 +48,15 @@ function calculateFactorial() {
     const number = parseInt(input.value);
     
     if (isNaN(number) || input.value === '') {
-        alert('Please enter a valid number!');
+        // This function is now handled in the HTML file
         return;
     }
     
     try {
         const result = factorial(number);
-        alert(`The factorial of ${number} is: ${result}`);
+        // Result display is now handled in the HTML file
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        // Error display is now handled in the HTML file
     }
 }
 
@@ -65,14 +65,14 @@ function calculateFactorialRecursive() {
     const number = parseInt(input.value);
     
     if (isNaN(number) || input.value === '') {
-        alert('Please enter a valid number!');
+        // This function is now handled in the HTML file
         return;
     }
     
     try {
         const result = factorialRecursive(number);
-        alert(`The factorial of ${number} (recursive) is: ${result}`);
+        // Result display is now handled in the HTML file
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        // Error display is now handled in the HTML file
     }
 }
